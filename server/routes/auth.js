@@ -1,6 +1,7 @@
 import express from 'express';
 import User from '../models/user.js'; // Correct the path if needed
-
+import jwt from 'jsonwebtoken';
+import auth from '../middlewares/auth.js';
 const authRouter = express.Router();
 
 authRouter.post('/api/signup', async (req, res) => {
@@ -26,10 +27,12 @@ authRouter.post('/api/signup', async (req, res) => {
             user = await user.save();
             console.log('User Registered Successfully');
         }
+        const token = jwt.sign({id: user._id}, "passwordKey");
+        
 
         console.log('api called succesfully returning user');
 
-        res.json({ user: user });
+        res.json({ user,token });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -37,6 +40,10 @@ authRouter.post('/api/signup', async (req, res) => {
 });
 authRouter.get('/api/v1',(req,res)=>{
     res.send('hello');
+})
+authRouter.get('/',auth,async(req,res)=>{
+    const user = await User.findById(req.user);
+    res.json({user,token :req.token })
 })
 
 export default authRouter;
