@@ -10,7 +10,7 @@ import cors from 'cors';
 const corsOptions = {
   origin: '*', // Allow all origins (use specific origin for better security)
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allow specific HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
+  allowedHeaders: ['Content-Type', 'Authorization','x-auth-token'], // Allow specific headers
 };
 
 

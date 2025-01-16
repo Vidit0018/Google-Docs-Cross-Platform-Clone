@@ -43,7 +43,7 @@ authRouter.get('/api/v1',(req,res)=>{
 })
 authRouter.get('/',auth,async(req,res)=>{
     const user = await User.findById(req.user);
-    res.json({user,token :req.token })
+    res.json({user,token :req.token})
 })
 
 export default authRouter;

@@ -6,7 +6,6 @@ class UserModel {
   final String profilePic;
   final String uid;
   final String token;
-
   UserModel({
     required this.email,
     required this.name,
@@ -15,19 +14,7 @@ class UserModel {
     required this.token,
   });
 
-  // Factory constructor for creating a UserModel instance from JSON
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      email: json['email'] as String,
-      name: json['name'] as String,
-      profilePic: json['profilePic'] as String,
-      uid: json['_id'] as String,
-      token: json['token'] as String,
-    );
-  }
-
-  // Method to convert a UserModel instance to JSON
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'email': email,
       'name': name,
@@ -37,12 +24,19 @@ class UserModel {
     };
   }
 
-  // Optional: Convert the UserModel to a JSON string
-  String toJsonString() => json.encode(toJson());
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      email: map['email'] ?? '',
+      name: map['name'] ?? '',
+      profilePic: map['profilePic'] ?? '',
+      uid: map['_id'] ?? '',
+      token: map['token'] ?? '',
+    );
+  }
 
-  // Optional: Create a UserModel instance from a JSON string
-  factory UserModel.fromJsonString(String source) =>
-      UserModel.fromJson(json.decode(source) as Map<String, dynamic>);
+  String toJson() => json.encode(toMap());
+
+  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source));
 
   UserModel copyWith({
     String? email,

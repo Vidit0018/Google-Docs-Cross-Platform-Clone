@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:docs_clone/constants.dart';
+import 'package:docs_clone/helper_funcitons/pretty_response.dart';
 import 'package:docs_clone/models/error_model.dart';
 import 'package:docs_clone/models/user_model.dart';
+import 'package:docs_clone/repository/local_storage_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
@@ -19,6 +21,7 @@ final authRepositoryProvider = Provider(
     ),
     
     client: Client(),
+    localStorageRepository: LocalStorageRepository(),
   ),
 );
 final userProvider = StateProvider<UserModel?>((ref) => null);
@@ -26,10 +29,11 @@ final userProvider = StateProvider<UserModel?>((ref) => null);
 class AuthRepository {
   final Client _client;
   final GoogleSignIn _googleSignIn;
+  final LocalStorageRepository _localStorageRepository;
 
-  AuthRepository({required GoogleSignIn googleSignIn, required Client client})
+  AuthRepository({required GoogleSignIn googleSignIn, required Client client , required LocalStorageRepository localStorageRepository })
       : _googleSignIn = googleSignIn,
-        _client = client;
+        _client = client,_localStorageRepository= localStorageRepository;
   Future<ErrorModel> signInWithGoogle() async {
     ErrorModel error =
         ErrorModel(error: 'Some unexpected error occured ', data: null);
@@ -40,9 +44,7 @@ class AuthRepository {
       final user = await _googleSignIn.signIn();
       
       if (user != null) {
-        print('User info: ${user.toString()}');
 
-        print('URL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!${user.photoUrl}');
         final userAcc = UserModel(
 
             email: user.email,
@@ -63,6 +65,7 @@ class AuthRepository {
               token : jsonDecode(res.body)['token'],
             );
             error = ErrorModel(error: null, data: newUser);
+            _localStorageRepository.setToken(newUser.token);
             break;
         }
       }
@@ -73,20 +76,39 @@ class AuthRepository {
     }
     return error;
   }
-  // Future<void> signInSilently() async {
-  //   try {
-  //     print('Attempting silent sign-in...');
-  //     final user = await _googleSignIn.signInSilently();
-  //     if (user != null) {
-  //       print('Silent Sign-In Successful');
-  //       print('Email: ${user.email}');
-  //       print('Name: ${user.displayName}');
-  //       print('Photo URL: ${user.photoUrl}');
-  //     } else {
-  //       print('No existing session found.');
-  //     }
-  //   } catch (e) {
-  //     print('Silent sign-in error: $e');
-  //   }
-  // }
+  Future<ErrorModel> getUserData() async {
+    ErrorModel error =
+        ErrorModel(error: 'Some unexpected error occured ', data: null);
+    try {
+        print('inside get user data');
+        String? token = await _localStorageRepository.gettoken();
+        print(token);
+        if(token!= null){
+
+        var res = await _client.get(Uri.parse('$host/'),
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8',
+              'x-auth-token':token,
+            });
+
+           printPrettyResponse(res.body);
+        switch (res.statusCode) {
+          case 200:final newUser = UserModel.fromJson(
+              jsonEncode(
+                jsonDecode(res.body)['user'],
+              ),
+            ).copyWith(token: token);
+
+            error = ErrorModel(error: null, data: newUser);
+            _localStorageRepository.setToken(newUser.token);
+            break;
+      }
+        }
+    } catch (e) {
+      // print('!!!!!!!!!!! Error !!!!!!!!!');
+      print(e);
+      error = ErrorModel(error: e.toString(), data: null);
+    }
+    return error;
+  }
 }
