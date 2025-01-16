@@ -27,6 +27,8 @@ authRouter.post('/api/signup', async (req, res) => {
             console.log('User Registered Successfully');
         }
 
+        console.log('api called succesfully returning user');
+
         res.json({ user: user });
     } catch (error) {
         console.error("Error:", error);
