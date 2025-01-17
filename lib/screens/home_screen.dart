@@ -6,6 +6,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends ConsumerWidget{
+
+  void signOut(WidgetRef ref){
+    ref.read(authRepositoryProvider).signOut();
+    ref.read(userProvider.notifier).update((state)=>null);
+  }
   HomeScreen({super.key});
   @override
   Widget build(BuildContext context , WidgetRef ref) {
@@ -14,8 +19,9 @@ class HomeScreen extends ConsumerWidget{
       appBar: AppBar(
         backgroundColor: kWhiteColor,
         elevation: 0,
+        
         actions: [IconButton(onPressed: (){}, icon: Icon(Icons.add),color: kBlackColor,),
-        IconButton(onPressed: (){}, icon: Icon(Icons.logout),color: kRedColor,)
+        IconButton(onPressed: ()=>signOut(ref), icon: Icon(Icons.logout),color: kRedColor,)
         ],
       ),
       body: Center(
