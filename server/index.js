@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import authRouter from "./routes/auth.js";
 dotenv.config();
 import cors from 'cors';
+import documentRouter from "./routes/document.js";
 
 
 // Configure CORS
@@ -21,6 +22,7 @@ const DB = `mongodb+srv://viditmsit:${process.env.DB_Password}@cluster0.kjblz.mo
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(authRouter);
+app.use(documentRouter);
 
 mongoose.connect(DB).then(
     ()=>{console.log('DB connection successful ✌️')}
