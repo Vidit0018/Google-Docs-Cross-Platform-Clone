@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:docs_clone/colors.dart';
 import 'package:docs_clone/repository/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,13 +10,25 @@ class HomeScreen extends ConsumerWidget{
   @override
   Widget build(BuildContext context , WidgetRef ref) {
     return Scaffold(
+      backgroundColor: kWhiteColor,
+      appBar: AppBar(
+        backgroundColor: kWhiteColor,
+        elevation: 0,
+        actions: [IconButton(onPressed: (){}, icon: Icon(Icons.add),color: kBlackColor,),
+        IconButton(onPressed: (){}, icon: Icon(Icons.logout),color: kRedColor,)
+        ],
+      ),
       body: Center(
+        
+        
       child: Column(
+        
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(ref.watch(userProvider)!.email),
 
           Center(
+            
         child: _buildProfileImage(ref.watch(userProvider)!.profilePic),
       ),
 
