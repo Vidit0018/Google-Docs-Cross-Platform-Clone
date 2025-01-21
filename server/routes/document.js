@@ -32,4 +32,30 @@ documentRouter.get('/docs/me',auth,async(req,res)=>{
     
 })
 
+documentRouter.post('/doc/title',auth ,async(req,res)=>{
+
+    try {
+        console.log('updating title');
+        const {id,title} = req.body;
+        const document = await Document.findByIdAndUpdate(id,{title : title});
+
+        res.json(document);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({error: error.message});
+    }
+
+});
+
+documentRouter.get('/doc/:id',auth,async(req,res)=>{
+    try{
+        const documents = await Document.findById(req.params.id);
+        res.json(documents);
+    }catch(e){
+        res.status(500).json({error : e.message});
+    }
+    
+})
+
+
 export default documentRouter;

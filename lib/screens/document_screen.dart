@@ -1,4 +1,8 @@
 import 'package:docs_clone/colors.dart';
+import 'package:docs_clone/models/document_model.dart';
+import 'package:docs_clone/models/error_model.dart';
+import 'package:docs_clone/repository/auth_repository.dart';
+import 'package:docs_clone/repository/document_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -20,6 +24,7 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
       TextEditingController(text: 'Untitled Document');
   QuillController _controller = QuillController.basic();
   //  quill.QuillController? _controller;
+  ErrorModel ? errorModel;
 
   @override
   void dispose() {
@@ -27,78 +32,108 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
     titleController.dispose();
     super.dispose();
   }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchDocumentData();
+  }
+  void updateTitle(WidgetRef ref,String title)
+  {print('update title called');
+    ref.read(DocumentRepositoryProvider).updateTitle(token: ref.read(userProvider)!.token, id: widget.id , title: title);
+    fetchDocumentData();
+  }
+  void fetchDocumentData()async{
+    errorModel= await ref.read(DocumentRepositoryProvider).getDocumentById(ref.read(userProvider)!.token, widget.id);
 
+    if(errorModel!.data !=null){
+      setState(() {
+      titleController.text = (errorModel!.data as DocumentModel).title;
+        
+      });
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: kWhiteColor,
-          elevation: 0,
-          actions: [
-            ElevatedButton.icon(
-              onPressed: () {},
-              label: Text(
-                'Share',
-                style: TextStyle(
-                  color: kWhiteColor,
-                ),
-              ),
-              icon: Icon(
-                Icons.lock,
-                size: 16,
-                color: kWhiteColor,
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: kBlueColor,
-                padding: EdgeInsets.all(
-                    10), // Updated to use ElevatedButton.styleFrom
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                      4), // Minimal rounding for rectangular shape
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 16,
-            )
-          ],
-          title: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 9),
-            child: Row(
-              children: [
-                Image.asset(
-                  'assets/icons/google-docs.png',
-                  height: 40,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    controller: titleController,
-                    focusNode: focusNode,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: kBlueColor,
-                        ),
-                      ),
-                      contentPadding: EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(1),
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: kGreyColor, width: 0.1)),
-              )),
+  backgroundColor: kWhiteColor,
+  elevation: 0,
+  actions: [
+    ElevatedButton.icon(
+      onPressed: () {},
+      label: Text(
+        'Share',
+        style: TextStyle(
+          color: kWhiteColor,
         ),
+      ),
+      icon: Icon(
+        Icons.lock,
+        size: 16,
+        color: kWhiteColor,
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: kBlueColor,
+        padding: EdgeInsets.all(10), // Button padding
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4), // Minimal rounding
+        ),
+      ),
+    ),
+    SizedBox(
+      width: 8,
+    )
+  ],
+  title: Row(
+    children: [
+      Padding(
+        padding: const EdgeInsets.only(right: 4), // Adjust padding near the logo
+        child: Image.asset(
+          'assets/icons/google-docs.png',
+          height: 40,
+        ),
+      ),
+      Expanded(
+        child: SizedBox(
+          
+          height: 40, // Ensure the height matches the logo
+          child: TextField(
+            onSubmitted: (value)=> 
+              updateTitle(ref, value),
+            controller: titleController,
+            focusNode: focusNode,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: kBlueColor,
+                ),
+              ),
+              contentPadding: EdgeInsets.symmetric(horizontal: 8),
+              filled: true,
+              fillColor: Colors.grey[200], // Optional for better visibility
+            ),
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      ),
+    ],
+  ),
+  bottom: PreferredSize(
+    preferredSize: const Size.fromHeight(1),
+    child: Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: kGreyColor, width: 0.1),
+      ),
+    ),
+  ),
+),
+
         body: Center(
           child: Column(
             children: [
@@ -107,7 +142,12 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
               ),
               QuillSimpleToolbar(
                 controller: _controller,
-                configurations: const QuillSimpleToolbarConfigurations(),
+                configurations: const QuillSimpleToolbarConfigurations(
+                  color: kBlueColor,
+                  
+                  // decoration: 
+                  
+                ),
               ),
               SizedBox(
                 height: 10,
