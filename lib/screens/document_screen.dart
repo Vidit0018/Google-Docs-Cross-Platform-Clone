@@ -9,6 +9,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:routemaster/routemaster.dart';
 
 class DocumentScreen extends ConsumerStatefulWidget {
   final String id;
@@ -41,6 +42,7 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
   void updateTitle(WidgetRef ref,String title)
   {print('update title called');
     ref.read(DocumentRepositoryProvider).updateTitle(token: ref.read(userProvider)!.token, id: widget.id , title: title);
+    ref.read(DocumentRepositoryProvider).getDocuments(ref.read(userProvider)!.token);
     fetchDocumentData();
   }
   void fetchDocumentData()async{
@@ -58,6 +60,17 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+    icon: Icon(
+      Icons.arrow_back,
+      color: kBlueColor, // Customize the color of the back arrow
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+      Routemaster.of(context).push('/'); // Go back when the icon is pressed
+    },
+  ),
+
   backgroundColor: kWhiteColor,
   elevation: 0,
   actions: [

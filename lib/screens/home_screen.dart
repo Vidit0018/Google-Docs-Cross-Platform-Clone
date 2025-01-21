@@ -33,8 +33,10 @@ class HomeScreen extends ConsumerWidget {
   void navigateToDocument(BuildContext context,String documentId){
     Routemaster.of(context).push('/document/$documentId');
   }
+  
 
   HomeScreen({super.key});
+  
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
