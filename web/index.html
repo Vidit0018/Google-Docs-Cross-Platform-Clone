@@ -36,6 +36,11 @@
 <body>
   <script src="flutter_bootstrap.js" async></script>
   <script src="https://apis.google.com/js/api.js"></script>
-
+  <script>
+    gapi.load('client', () => {
+      console.log('Google API client loaded successfully');
+    });
+  </script>
+  
 </body>
 </html>

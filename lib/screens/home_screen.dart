@@ -30,6 +30,9 @@ class HomeScreen extends ConsumerWidget {
           .showSnackBar(SnackBar(content: Text(errorModel.error.toString())));
     }
   }
+  void navigateToDocument(BuildContext context,String documentId){
+    Routemaster.of(context).push('/document/$documentId');
+  }
 
   HomeScreen({super.key});
   @override
@@ -95,13 +98,17 @@ class HomeScreen extends ConsumerWidget {
                       .length, // Ensure itemCount matches the data length
                   itemBuilder: (ctx, index) {
                     DocumentModel document = snapshot.data!.data[index];
-                    return SizedBox(
-                      height: 100,
-                      child: Card(
-                        child: Center(
-                          child: Text(
-                            document.title,
-                            style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold,color: kBlackColor),
+                    return InkWell(
+                      borderRadius:BorderRadius.all(Radius.circular(16)) ,
+                      onTap: ()=> navigateToDocument(context, document.id),
+                      child: SizedBox(
+                        height: 100,
+                        child: Card(
+                          child: Center(
+                            child: Text(
+                              document.title,
+                              style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold,color: kBlackColor),
+                            ),
                           ),
                         ),
                       ),

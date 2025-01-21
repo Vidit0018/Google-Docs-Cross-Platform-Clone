@@ -9,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
 
+
+
 final authRepositoryProvider = Provider(
   (ref) => AuthRepository(
     googleSignIn: GoogleSignIn(),
@@ -20,7 +22,6 @@ final authRepositoryProvider = Provider(
 final userProvider = StateProvider<UserModel?>((ref) => null);
 
 class AuthRepository {
-  
   final GoogleSignIn _googleSignIn;
   final Client _client;
   final LocalStorageRepository _localStorageRepository;
@@ -43,7 +44,7 @@ class AuthRepository {
         final userAcc = UserModel(
           email: user.email,
           name: user.displayName ?? '',
-          profilePic: user.photoUrl ?? 'https://cdn.pixabay.com/photo/2021/07/02/04/48/user-6380868_1280.png',
+          profilePic: user.photoUrl ?? '',
           uid: '',
           token: '',
         );
