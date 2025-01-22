@@ -9,6 +9,7 @@ import 'package:docs_clone/repository/document_repository.dart';
 import 'package:docs_clone/repository/socket_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill/quill_delta.dart';
 
@@ -96,6 +97,7 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
       });
     }
 
+
     _controller!.document.changes.listen((DocChange change) {
       if (change.source == ChangeSource.local) {
         Map<String, dynamic> map = {
@@ -131,7 +133,14 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
           elevation: 0,
           actions: [
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: 'http://localhost:3000/#/document/${widget.id}')).then((value){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Link Copied to Clipboard'))
+                  
+                  ,) ;
+                });
+              },
               label: Text(
                 'Share',
                 style: TextStyle(
@@ -160,9 +169,14 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
               Padding(
                 padding: const EdgeInsets.only(
                     right: 4), // Adjust padding near the logo
-                child: Image.asset(
-                  'assets/icons/google-docs.png',
-                  height: 40,
+                child: GestureDetector(
+                  onTap: (){
+                    Routemaster.of(context).replace('/');
+                  },
+                  child: Image.asset(
+                    'assets/icons/google-docs.png',
+                    height: 40,
+                  ),
                 ),
               ),
               Expanded(
