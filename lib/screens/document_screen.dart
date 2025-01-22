@@ -3,6 +3,7 @@ import 'package:docs_clone/models/document_model.dart';
 import 'package:docs_clone/models/error_model.dart';
 import 'package:docs_clone/repository/auth_repository.dart';
 import 'package:docs_clone/repository/document_repository.dart';
+import 'package:docs_clone/repository/socket_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -26,6 +27,7 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
   QuillController _controller = QuillController.basic();
   //  quill.QuillController? _controller;
   ErrorModel ? errorModel;
+  SocketRepository socketRepository = SocketRepository();
 
   @override
   void dispose() {
@@ -37,6 +39,7 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    socketRepository.joinRoom(widget.id);
     fetchDocumentData();
   }
   void updateTitle(WidgetRef ref,String title)
