@@ -17,8 +17,10 @@ class SocketRepository {
 
   }
 
+
   void autoSave(Map<String,dynamic> data){
-    _socketClient.emit('Save',data);
+    // print('auto-saving data');
+    _socketClient.emit('save',data);
 
   }
   void changeListener(Function(Map<String,dynamic>) func) {

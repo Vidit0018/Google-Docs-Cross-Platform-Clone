@@ -7,7 +7,7 @@ import cors from "cors";
 import documentRouter from "./routes/document.js";
 import http from "http";
 import socketIo from "socket.io"; // Import the default CommonJS export
-
+import  Document  from './models/document.js';
 
 // Configure CORS
 const corsOptions = {
@@ -73,9 +73,15 @@ io.on("connection", (socket) => {
   });
 });
 const saveData = async (data) =>{
-    let document = await Document.findById(data.documentId);
-    document.content = data.delta;
-    document = await document.save();
+    // console.log('saving changes');
+    try {
+        
+        let document = await Document.findById(data.room);
+        document.content = data.delta;
+        document = await document.save();
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // Start the Server
