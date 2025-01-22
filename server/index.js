@@ -60,11 +60,23 @@ io.on("connection", (socket) => {
     console.log('joined',documentId);
 
   });
+  socket.on('typing',(data)=>{
+    socket.broadcast.to(data.room).emit("changes",data);
+
+  });
+  socket.on("save",(data)=>{
+    saveData(data);
+  })
 
   socket.on("disconnect", () => {
     console.log("A user disconnected:", socket.id);
   });
 });
+const saveData = async (data) =>{
+    let document = await Document.findById(data.documentId);
+    document.content = data.delta;
+    document = await document.save();
+}
 
 // Start the Server
 server.listen(PORT, "0.0.0.0", () => {
