@@ -1,2 +1,2 @@
-const host = 'http://192.168.1.3:3001';
+const host = 'https://google-docs-cross-platform-clone.onrender.com';
 // const host = 'http://localhost:3001';

@@ -52,6 +52,7 @@ class AuthRepository {
         var res = await _client.post(Uri.parse('$host/api/signup'), body: userAcc.toJson(), headers: {
           'Content-Type': 'application/json; charset=UTF-8',
         });
+        print(res.statusCode);
 
         switch (res.statusCode) {
           case 200:
@@ -65,6 +66,7 @@ class AuthRepository {
         }
       }
     } catch (e) {
+      print(e.toString());
       error = ErrorModel(
         error: e.toString(),
         data: null,
